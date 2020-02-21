@@ -1,0 +1,366 @@
+<style>
+	body{
+		font-family: 'Do Hyeon', sans-serif;
+	}
+	.logoimg{
+		margin-left: 50px;
+	}
+	.main{
+		background-color: #ffe196;
+		font-family: 'Do Hyeon', sans-serif;
+		text-align: center;
+
+	}
+	
+	/* url 문단 내려오는거 막기 */
+	.url-info{
+		display: inline;
+	}
+	
+	.icon-info {
+		color: orange;
+		position: absolute;
+		top: 0;
+    	left: 15px;
+	}
+	
+	#detail_button_info {
+		bottom: 25px;
+    	right: 39px;
+		position: absolute;
+	}
+	
+	.icon-text {
+		position: absolute;
+		top: 0;
+    	left: 23px;
+		color: white;
+		font-size: 16px;
+		font-weight: 700;
+	}
+	
+	.result_credit {
+		font-size: 23px;
+	}
+	
+	
+	.row {
+		margin-bottom: 0px;
+	}
+	
+	.fonts-color{
+		color: #36B8CF;
+	}
+
+	.page-footer{
+		background-color: #feb377;
+	}
+	.card{
+		
+	}
+	h3{
+		color: #5b5656;
+	}
+	h4{
+		color: gray;
+	}
+	.card-body{
+		text-align: center;
+	}
+	ul{
+
+	}
+	li{
+		padding: 10px 10px;
+	}
+	.type{
+		display: inline-block;
+		text-align: left;
+		margin: 0px 30px 0px 20px;
+		width: 30%;
+	}
+	.value{
+		display: inline-block;
+		text-align: right;
+
+		margin: 0px 30px;
+		width: 40%;
+		color: #5b5656;
+	}
+	.final{
+		margin-left: 30px;
+		color: #fb8d62;
+	}
+</style>
+
+<div>
+	<a class="nav-link" href="/best_credit"><img class="logoimg" src="logo.png" alt="logo image" width="350" height="300"/></a>
+</div>
+
+<div class="main">
+	<br>
+	<div class="container">
+	<div class="row">
+		<div class="col-sm">	
+			<div class="card" style="background: #436068;"> 
+				<div class="card-body" style="margin: 0 auto;">
+					<div class="row">
+						<h3 style="font-size: 25px; color: white; font-weight: 300; margin-bottom: 0px;">현재 고객님께서 입력한 정보</h3>
+					</div>
+				</div>
+			</div>
+			<div class="card">
+			<div class="card-body">
+			
+				<br>
+			<ul>
+				<li>
+					<h4 class="type">성별</h4>		
+					<h4 class="value">
+						<span class="fonts-color"><%= @sex %></span>
+					</h4>				
+				</li>
+				<li>
+					<h4 class="type">생년월일</h4>
+					<h4 class="value">
+						<span class="fonts-color"><%= @person.birthday %></span>
+					</h4>				
+				</li>
+				
+				<li>
+					<h4 class="type">가입기간</h4>
+					<h4 class="value">
+						<span class="fonts-color"><%= @rate.to_i %></span>개월
+					</h4>
+				</li>
+        		<li>
+					<h4 class="type">예치금</h4>
+					<h4 class="value">
+						<span class="fonts-color"><%= number_with_delimiter(@person.money) %></span>원
+					</h4>
+				</li>
+				<li>
+					<h4 class="type">가입경로</h4>
+					<h4 class="value">
+						<span class="fonts-color"><%= @contact %></span>
+					</h4>
+				</li>
+				<li>
+					<h4 class="type">방문지역</h4>
+					<h4 class="value"><span class="fonts-color"><%= @person.region %></span></h4>
+  				</li>
+							
+			</ul>
+		</div>
+			</div>	
+		</div>
+		
+	<!-- 맞춤형 상품 추천 card -->
+
+		<div class="col-sm">
+			<div class="card" style="background: #436068;"> 
+				<div class="card-body" style="margin: 0 auto;">
+					<div class="row">
+						<h3 style="font-size: 25px; color: white; font-weight: 300; margin-bottom: 0px;">79개 저축은행의 300개 예금 상품을 분석한 결과</h3>
+					</div>
+				</div>
+			</div>
+		
+			<% if @top_rates.blank? %>
+			<div class="card">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-8">
+						 	<p style="font-size: 25px">1등급에 해당하는 저축은행 상품이 존재하지 않습니다.</p>
+						</div>
+						<div class="col-md-4"><img class="" src="rank1.png" style="width:100%"></div>
+					</div>
+					<div class="row">
+						<h2 class="final">
+						</h2>
+					</div>
+				</div>
+			</div>
+			<% else %>
+			<div class="card"> 
+				<div class="card-body">
+					<i class="fa fa-bookmark fa-2x icon-info"></i>
+					<span class='icon-text' style='color: white;'>1</span>
+					<div class="row">
+						<div class="col-md-8">
+							<h3 class="result_credit">연 <span class='fonts-color'><%= @top_rates.max %></span>% <span class='fonts-color'><%= @rate.to_i %></span>개월</h3>
+							<h3 class="result_credit"><a class="nav-link url-info" href=<%= @top_url[@top_rates.index(@top_rates.max)] %> target="_blank"><%= @top_bank[@top_rates.index(@top_rates.max)] %></a><%= @top_name[@top_rates.index(@top_rates.max)] %></h3>
+						<hr color='#E7E7E7' style=""/>
+						</div>
+						<div class="col-md-4"><img class="" src="rank1.png" style="width:100%"></div>
+					</div>
+					<div class="row">
+						<% if @rate == 6 or @rate == 12 %>
+						<h2 class="final">	
+							만기지급금액: <%= number_with_delimiter(((@person.money*@top_rates.max)*(1.to_f/100) + @person.money).to_i) %>원
+						</h2>
+						<% elsif @rate == 24 %>
+						<h2 class="final">	
+							만기지급금액: <%= number_with_delimiter(((@person.money*@top_rates.max)*(1.to_f/100)*2 + @person.money).to_i) %>원
+						</h2>
+						<% elsif @rate == 36 %>
+						<h2 class="final">	
+							만기지급금액: <%= number_with_delimiter(((@person.money*@top_rates.max)*(1.to_f/100)*3 + @person.money).to_i) %>원
+						</h2>
+						<% end %>
+						<a class="nav-link" href="/bank_info/<%= @top_id[@top_rates.index(@top_rates.max)] %>"><button type="button" id='detail_button_info' class="btn btn-info">은행 분석 보기</button></a>
+					</div>
+				</div>
+			</div>
+			<% end %>
+			
+			<% if @top_rates2.blank? %>
+			<div class="card"> 
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-8">
+						 	<p style="font-size: 25px">2등급에 해당하는 저축은행 상품이 존재하지 않습니다.</p>
+						</div>
+						<div class="col-md-4"><img class="" src="rank2.png" style="width:100%"></div>
+					</div>
+					<div class="row">
+						<h2 class="final">
+						</h2>
+					</div>
+				</div>
+			</div>
+			<% else %>
+			<div class="card"> 
+				<div class="card-body">
+					<i class="fa fa-bookmark fa-2x icon-info"></i>
+					<span class='icon-text' style='color: white;'>2</span>
+					<div class="row">
+						<div class="col-md-8">
+						 	<h3 class="result_credit">연 <span class='fonts-color'><%= @top_rates2.max %></span>% <span class='fonts-color'><%= @rate.to_i %></span>개월</h3>
+							<h3 class="result_credit"><a class="nav-link url-info" href=<%= @top_url2[@top_rates2.index(@top_rates2.max)] %> target="_blank"><%= @top_bank2[@top_rates2.index(@top_rates2.max)] %></a><%= @top_name2[@top_rates2.index(@top_rates2.max)] %></h3>
+						<hr color='#E7E7E7' style=""/>
+						</div>
+						<div class="col-md-4"><img class="" src="rank2.png" style="width:100%"></div>
+					</div>
+					<div class="row">
+						<% if @rate == 6 or @rate == 12 %>
+						<h2 class="final">	
+							만기지급금액: <%= number_with_delimiter(((@person.money*@top_rates2.max)*(1.to_f/100) + @person.money).to_i) %>원
+						</h2>
+						<% elsif @rate == 24 %>
+						<h2 class="final">	
+							만기지급금액: <%= number_with_delimiter(((@person.money*@top_rates2.max)*(1.to_f/100)*2 + @person.money).to_i) %>원
+						</h2>
+						<% elsif @rate == 36 %>
+						<h2 class="final">	
+							만기지급금액: <%= number_with_delimiter(((@person.money*@top_rates2.max)*(1.to_f/100)*3 + @person.money).to_i) %>원
+						</h2>
+						<% end %>
+						<a class="nav-link" href="/bank_info/<%= @top_id2[@top_rates2.index(@top_rates2.max)] %>"><button type="button" id='detail_button_info' class="btn btn-info">은행 분석 보기</button></a>
+					</div>
+				</div>
+			</div>
+			<% end %>
+			
+			<% if @top_rates3.blank? %>
+			<div class="card"> 
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-8">
+						 	<p style="font-size: 25px">3등급에 해당하는 저축은행 상품이 존재하지 않습니다.</p>
+						</div>
+						<div class="col-md-4"><img class="" src="rank3.png" style="width:100%"></div>
+					</div>
+					<div class="row">
+						<h2 class="final">
+						</h2>
+					</div>
+				</div>
+			</div>
+			<% else %>
+			<div class="card"> 
+				<div class="card-body">
+					<i class="fa fa-bookmark fa-2x icon-info"></i>
+					<span class='icon-text' style='color: white;'>3</span>
+					<div class="row">
+						<div class="col-md-8">
+						 	<h3 class="result_credit">연 <span class='fonts-color'><%= @top_rates3.max %></span>% <span class='fonts-color'><%= @rate.to_i %></span>개월</h3>
+							<h3 class="result_credit"><a class="nav-link url-info" href=<%= @top_url3[@top_rates3.index(@top_rates3.max)] %> target="_blank"><%= @top_bank3[@top_rates3.index(@top_rates3.max)] %></a><%= @top_name3[@top_rates3.index(@top_rates3.max)] %></h3>
+						<hr color='#E7E7E7' style=""/>
+						</div>
+						<div class="col-md-4"><img class="" src="rank3.png" style="width:100%"></div>
+					</div>
+					<div class="row">
+						<% if @rate == 6 or @rate == 12 %>
+						<h2 class="final">	
+							만기지급금액: <%= number_with_delimiter(((@person.money*@top_rates3.max)*(1.to_f/100) + @person.money).to_i) %>원
+						</h2>
+						<% elsif @rate == 24 %>
+						<h2 class="final">	
+							만기지급금액: <%= number_with_delimiter(((@person.money*@top_rates3.max)*(1.to_f/100)*2 + @person.money).to_i) %>원
+						</h2>
+						<% elsif @rate == 36 %>
+						<h2 class="final">	
+							만기지급금액: <%= number_with_delimiter(((@person.money*@top_rates3.max)*(1.to_f/100)*3 + @person.money).to_i) %>원
+						</h2>
+						<% end %>
+						<a class="nav-link" href="/bank_info/<%= @top_id3[@top_rates3.index(@top_rates3.max)] %>"><button type="button" id='detail_button_info' class="btn btn-info">은행 분석 보기</button></a>
+					</div>
+				</div>
+			</div>
+			<% end %>
+			
+	
+			<% if @top_rates4.blank? %>
+			<div class="card"> 
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-8">
+						 	<p style="font-size: 25px">4등급에 해당하는 저축은행 상품이 존재하지 않습니다.</p>
+						</div>
+						<div class="col-md-4"><img class="" src="rank4.png" style="width:100%"></div>
+					</div>
+					<div class="row">
+						<h2 class="final">
+						</h2>
+					</div>
+				</div>
+			</div>
+			<% else %>
+			<div class="card"> 
+				<div class="card-body">
+					<i class="fa fa-bookmark fa-2x icon-info"></i>
+					<span class='icon-text' style='color: white;'>4</span>
+					<div class="row">
+						<div class="col-md-8">
+						 	<h3 class="result_credit">연 <span class='fonts-color'><%= @top_rates4.max %></span>% <span class='fonts-color'><%= @rate.to_i %></span>개월</h3>
+							<h3 class="result_credit"><a class="nav-link url-info" href=<%= @top_url4[@top_rates4.index(@top_rates4.max)] %> target="_blank"><%= @top_bank4[@top_rates4.index(@top_rates4.max)] %></a><%= @top_name4[@top_rates4.index(@top_rates4.max)] %></h3>
+						<hr color='#E7E7E7' style=""/>
+						</div>
+						<div class="col-md-4"><img class="" src="rank4.png" style="width:100%"></div>
+					</div>
+					<div class="row">
+						<% if @rate == 6 or @rate == 12 %>
+						<h2 class="final">	
+							만기지급금액: <%= number_with_delimiter(((@person.money*@top_rates4.max)*(1.to_f/100) + @person.money).to_i) %>원
+						</h2>
+						<% elsif @rate == 24 %>
+						<h2 class="final">	
+							만기지급금액: <%= number_with_delimiter(((@person.money*@top_rates4.max)*(1.to_f/100)*2 + @person.money).to_i) %>원
+						</h2>
+						<% elsif @rate == 36 %>
+						<h2 class="final">	
+							만기지급금액: <%= number_with_delimiter(((@person.money*@top_rates4.max)*(1.to_f/100)*3 + @person.money).to_i) %>원
+						</h2>
+						<% end %>
+						<a class="nav-link" href="/bank_info/<%= @top_id4[@top_rates4.index(@top_rates4.max)] %>"><button type="button" id='detail_button_info' class="btn btn-info">은행 분석 보기</button></a>
+					</div>
+				</div>
+			</div>
+			<% end %>
+			</div>	
+		
+	</div>
+	</div>
+	<br><br><br><br>
+</div>

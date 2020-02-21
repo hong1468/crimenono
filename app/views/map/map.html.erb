@@ -1,0 +1,439 @@
+<style>
+	
+	.map_wrap, .map_wrap * {margin:0; padding:0;}
+	.map_wrap {position:relative;width:100%;height:350px;}
+	.radius_border{border:1px solid #919191;border-radius:5px;}     
+    .custom_typecontrol {position:absolute;top:10px;right:10px;overflow:hidden;width:130px;height:30px;margin:0;padding:0;z-index:1;font-size:12px;font-family:'Malgun Gothic', '맑은 고딕', sans-serif;}
+    .custom_typecontrol span {display:block;width:65px;height:30px;float:left;text-align:center;line-height:30px;cursor:pointer;}
+    .custom_zoomcontrol {position:absolute;top: 0px;right:0;width: 36px;height: 80px;overflow:hidden;z-index:1;background-color:#F15F5F;} 
+    .custom_zoomcontrol span {display:block;width:36px;height:40px;text-align:center;cursor:pointer;}     
+    .custom_zoomcontrol span img {width:15px;height:15px;padding:12px 0;border:none;}             
+    .custom_zoomcontrol span:first-child{border-bottom:1px solid #FFFFFF;}  
+    .fa-plus {padding-top: 13px; color:#FFFFFF;}
+    .fa-minus {padding-top: 13px; color:#FFFFFF;}
+    infowindow.getPanels().overlayLayer{border-radius: 5px; border: 1px solid #EAEAEA;}
+
+	.dot {overflow:hidden;float:left;width:12px;height:12px;background:url('http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/mini_circle.png');} 
+	.dotOverlay {position:relative;bottom:10px;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;float:left;font-size:12px;padding:5px;background:#fff;}
+	.dotOverlay:nth-of-type(n) {border:0; box-shadow:0px 1px 2px #888;}    
+	.number {font-weight:bold;color:#ee6152;}
+	.dotOverlay:after {content:'';position:absolute;margin-left:-6px;left:50%;bottom:-8px;width:11px;height:8px;background:url('http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white_small.png')}
+	.distanceInfo {position:relative;top:5px;left:5px;list-style:none;margin:0;}
+	.distanceInfo .label {display:inline-block;width:50px;}
+	.distanceInfo:after {content:none;}
+	
+	.page-footer {
+    padding-top: 20px;
+    color: #fff;
+	background-color: black;}
+	.imgdiv{
+		text-align: center;
+	}
+	
+	.img{
+		width: 30%;
+	}
+
+	.search{
+	}
+	.way{
+		text-align: center;
+	}
+	#first{
+		margin: 10px 20px 10px 10px;
+	}
+	#second{
+		margin: 10px 10px;
+	}
+	h2{
+		font-family: 'Lemonada','Akronim', 'Crimson Text','Anton', sans-serif; 
+	}
+	@media (min-width: 400px) and (max-width: 480px) {
+		.mobile-text-size {
+			font-size: 23px;	
+		} 
+		.form-group{
+			width: 50%;
+			margin: 0px;
+		}
+		.img{
+			width: 50%;
+		}
+	}	
+	
+</style>
+
+<nav class="navbar navbar-dark bg-dark justify-content-center" style="height:85px">
+	<h2 class='mobile-text-size'>Protect Yourself From Crime</h2>
+		<%= image_tag "/caution.png", class: "img", style: "position: absolute; margin-top:90px;padding:0px;width:170%;height:600px;" %>
+</nav>
+
+<div class="container" style="margin-bottom:200px;">
+	<div class="imgdiv">
+		<%= image_tag "/nonocrime.png", class: "img" %>
+	</div>
+	<div class="search">
+		<form class="form-inline">
+  			<div class="form-group col-md-8 media_query" style="margin-left: 59px;margin-right:59px">
+    		<input type="text" name="query1" class="form-control" placeholder="원하는 장소를 입력해주세요.">
+  			</div>
+			<button class="btn btn-outline-secondary btn-lg" type="submit" id="button-addon2">검색</button>
+		</form>
+	</div>
+	<div class="way">
+		<button onclick="firstclick();" class="btn btn-outline-success btn-lg" type="submit" id="first">안전경로 1</button>
+		<button onclick="secondclick();" class="btn btn-outline-primary btn-lg" type="submit" id="second">안전경로 2</button>
+		<a href="/map"><%= image_tag "/reupdate.png", style: "width: 25px" %></a>
+		<p>Last-Update: 2020.02.19 15:30 기준</p>
+	</div>
+	
+<br>
+<div class="map_wrap">
+	<div id="map" style="width:100%; height:500px;"></div>
+	<div class="custom_zoomcontrol radius_border"> 
+		<span onclick="zoomIn()"><i class="fa fa-plus" aria-hidden="true"></i></span>  
+		<span onclick="zoomOut()"><i class="fa fa-minus" aria-hidden="true"></i></span>
+	</div>
+</div>	
+</div>
+
+<script>
+
+
+var mapContainer = document.getElementById('map'), // 지도를 표시할 div  
+ mapOption = { 
+        center: new kakao.maps.LatLng(37.56181400233214, 127.01364986840635), // 지도의 중심좌표
+        level: 3 // 지도의 확대 레벨
+    };
+
+var map = new daum.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+
+	// 지도 확대, 축소 컨트롤에서 확대 버튼을 누르면 호출되어 지도를 확대하는 함수입니다
+function zoomIn() {
+    	map.setLevel(map.getLevel() - 1);
+	}
+
+	// 지도 확대, 축소 컨트롤에서 축소 버튼을 누르면 호출되어 지도를 확대하는 함수입니다
+function zoomOut() {
+   	 map.setLevel(map.getLevel() + 1);
+	}
+	
+// 장소 검색 객체를 생성합니다
+var ps = new kakao.maps.services.Places(); 
+
+// 키워드로 장소를 검색합니다
+ps.keywordSearch('<%= @query1 %>', placesSearchCB); 
+
+// 키워드 검색 완료 시 호출되는 콜백함수 입니다
+function placesSearchCB (data, status, pagination) {
+    if (status === kakao.maps.services.Status.OK) {
+
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+        // LatLngBounds 객체에 좌표를 추가합니다
+        var bounds = new kakao.maps.LatLngBounds();
+
+        for (var i=0; i<data.length; i++) {
+            displayMarker(data[i]);    
+            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+        }       
+
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+        map.setBounds(bounds);
+    } 
+}
+
+// 지도에 마커를 표시하는 함수입니다
+function displayMarker(place) {
+    
+    // 마커를 생성하고 지도에 표시합니다
+    var marker = new kakao.maps.Marker({
+        map: map,
+        position: new kakao.maps.LatLng(place.y, place.x) 
+    });
+
+    // 마커에 클릭이벤트를 등록합니다
+    kakao.maps.event.addListener(marker, 'click', function() {
+        // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+        infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
+        infowindow.open(map, marker);
+    });
+}	
+
+
+// 지도에 표시할 원을 생성합니다
+var circle = new kakao.maps.Circle({
+	center : new kakao.maps.LatLng(<%= @recom_last.latitude %>, <%= @recom_last.longitude %>),  // 원의 중심좌표 입니다 
+	radius: 30, // 미터 단위의 원의 반지름입니다 
+	strokeWeight: 5, // 선의 두께입니다 
+	strokeColor: '#75B8FA', // 선의 색깔입니다
+	strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+	strokeStyle: 'dashed', // 선의 스타일 입니다
+	fillColor: '#CFE7FF', // 채우기 색깔입니다
+	fillOpacity: 0.7  // 채우기 불투명도 입니다   
+});
+	
+var circle2 = new kakao.maps.Circle({
+	center : new kakao.maps.LatLng(37.56111847979138, 127.01323775927098),  // 원의 중심좌표 입니다 
+	radius: 20, // 미터 단위의 원의 반지름입니다 
+	strokeWeight: 4, // 선의 두께입니다 
+	strokeColor: '#FF3636', // 선의 색깔입니다
+	strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+	strokeStyle: 'dashed', // 선의 스타일 입니다
+	fillColor: '#FF3636', // 채우기 색깔입니다
+	fillOpacity: 0  // 채우기 불투명도 입니다   
+}); 	
+
+	
+var circle3 = new kakao.maps.Circle({
+	center : new kakao.maps.LatLng(37.56157627563474, 127.01241387073424),  // 원의 중심좌표 입니다 
+	radius: 20, // 미터 단위의 원의 반지름입니다 
+	strokeWeight: 4, // 선의 두께입니다 
+	strokeColor: '#FF3636', // 선의 색깔입니다
+	strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+	strokeStyle: 'dashed', // 선의 스타일 입니다
+	fillColor: '#FF3636', // 채우기 색깔입니다
+	fillOpacity: 0  // 채우기 불투명도 입니다   
+}); 	
+	
+// 지도에 원을 표시합니다 
+circle.setMap(map);  
+	
+
+
+
+
+
+//두번째 경로
+function secondclick(){	
+	// 마커를 표시할 위치와 title 객체 배열입니다 
+	<% @recom_2.each do |x| %>
+	var positions = [
+		{
+			title: '<%= x.title %>',
+			latlng: new kakao.maps.LatLng(<%= x.latitude %>, <%= x.longitude %>)
+		},
+	];
+	
+
+	// 마커 이미지의 이미지 주소입니다
+	var imageSrc = "blue.png"; 
+    
+	for (var i = 0; i < positions.length; i ++) {
+    
+    	// 마커 이미지의 이미지 크기 입니다
+    	var imageSize = new kakao.maps.Size(30, 50); 
+    
+   	 	// 마커 이미지를 생성합니다    
+    	var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); 
+    
+    	// 마커를 생성합니다
+    	var marker = new kakao.maps.Marker({
+        	map: map, // 마커를 표시할 지도
+        	position: positions[i].latlng, // 마커를 표시할 위치
+        	title : positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+			image : markerImage, // 마커 이미지
+			clickable: true // 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
+    	});
+	}
+	// 마커를 지도에 표시합니다.
+	marker.setMap(map);
+
+	// 마커를 클릭했을 때 마커 위에 표시할 인포윈도우를 생성합니다
+	var iwContent = '<%= x.address %>', // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+	iwRemoveable = true; // removeable 속성을 ture 로 설정하면 인포윈도우를 닫을 수 있는 x버튼이 표시됩니다
+
+	// 인포윈도우를 생성합니다
+	var infowindow = new kakao.maps.InfoWindow({
+		content : iwContent,
+		removable : iwRemoveable
+	});
+
+	// 마커에 클릭이벤트를 등록합니다
+	kakao.maps.event.addListener(marker, 'click', function() {
+		  // 마커 위에 인포윈도우를 표시합니다
+		  infowindow.open(map, marker);  
+	});	
+	
+	//Line Path 시작
+	var linePath;
+    var lineLine = new daum.maps.Polyline();
+    var distance;
+	var distanceOverlay; // 선의 거리정보를 표시할 커스텀오버레이 입니다 
+    var dots = {}; // 선이 그려지고 있을때 클릭할 때마다 클릭 지점과 거리를 표시하는 커스텀 오버레이 배열입니다.
+	
+	var linePath2 = [
+		new kakao.maps.LatLng(37.5603311,127.013855),
+		new kakao.maps.LatLng(37.56077970956365, 127.01319695402124),
+		new kakao.maps.LatLng(37.5609238471306, 127.013391651867),
+		new kakao.maps.LatLng(37.56111847979138, 127.01323775927098),
+		new kakao.maps.LatLng(37.56157627563474, 127.01241387073424),
+		new kakao.maps.LatLng(37.562906055555544, 127.01325165771355)
+	]; 
+	
+
+	  
+	var polyline = new kakao.maps.Polyline({
+		path: linePath2, // 선을 구성하는 좌표배열 입니다
+		strokeWeight: 4, // 선의 두께 입니다
+		strokeColor: '#00a8cc', // 선의 색깔입니다
+		strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+		strokeStyle: 'solid' // 선의 스타일입니다
+	});
+	 
+	polyline.setMap(map);  
+
+ 
+	
+	<% end %>
+	//총 거리 계산하기
+	pos = new kakao.maps.LatLng(<%= @recom_last.latitude %>, <%= @recom_last.longitude %>);
+	var distance = Math.round(polyline.getLength());
+	displayCircleDot(pos, distance);
+	//alert(distance)
+
+
+
+ 	//alert(walkMin);
+    function displayCircleDot(position, distance) {
+		var walkkTime = distance / 67 | 0;
+		var walkHour = '', walkMin = '';
+
+		// 계산한 도보 시간이 60분 보다 크면 시간으로 표시합니다
+		if (walkkTime > 60) {
+			walkHour = '<span class="number">' + Math.floor(walkkTime / 60) + '</span>시간 '
+		}
+		walkMin = '<span class="number">' + walkkTime % 60 + '</span>분'
+        if (distance > 0) {
+            // 클릭한 지점까지의 그려진 선의 총 거리를 표시할 커스텀 오버레이를 생성합니다
+            var distanceOverlay = new daum.maps.CustomOverlay(
+                    {
+                        content : '<div class="dotOverlay">거리 <span class="number">'
+                                + distance + '</span>m'+'<br><span class="label">도보</span>' + walkMin+'</div>',
+                        position : position,
+                        yAnchor : 1,
+                        zIndex : 2
+                    });
+ 
+            // 지도에 표시합니다
+            distanceOverlay.setMap(map);
+        }
+    }
+circle2.setMap(map);
+circle3.setMap(map);  
+}
+
+//첫번째 경로
+function firstclick(){	
+	// 마커를 표시할 위치와 title 객체 배열입니다 
+	<% @recom_1.each do |x| %>
+	var positions = [
+	{
+		title: '<%= x.title %>',
+		latlng: new kakao.maps.LatLng(<%= x.latitude %>, <%= x.longitude %>)
+	},
+	];
+	
+	
+	// 마커 이미지의 이미지 주소입니다
+	var imageSrc = "/green.png"; 
+    
+	for (var i = 0; i < positions.length; i ++) {
+    
+    	// 마커 이미지의 이미지 크기 입니다
+    	var imageSize = new kakao.maps.Size(30, 53); 
+    
+   	 	// 마커 이미지를 생성합니다    
+    	var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); 
+    
+    	// 마커를 생성합니다
+    	var marker = new kakao.maps.Marker({
+        	map: map, // 마커를 표시할 지도
+        	position: positions[i].latlng, // 마커를 표시할 위치
+        	title : positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+			image : markerImage, // 마커 이미지
+			clickable: true // 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
+    	});
+	}
+	// 마커를 지도에 표시합니다.
+	marker.setMap(map);
+
+	// 마커를 클릭했을 때 마커 위에 표시할 인포윈도우를 생성합니다
+	var iwContent = '<%= x.address %>', // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+	iwRemoveable = true; // removeable 속성을 ture 로 설정하면 인포윈도우를 닫을 수 있는 x버튼이 표시됩니다
+
+	// 인포윈도우를 생성합니다
+	var infowindow = new kakao.maps.InfoWindow({
+		content : iwContent,
+		removable : iwRemoveable
+	});
+
+	// 마커에 클릭이벤트를 등록합니다
+	kakao.maps.event.addListener(marker, 'click', function() {
+		  // 마커 위에 인포윈도우를 표시합니다
+		  infowindow.open(map, marker);  
+	});	
+	<% end %>
+	//Line Path 시작
+	var linePath;
+    var lineLine = new daum.maps.Polyline();
+    var distance;
+	var distanceOverlay; // 선의 거리정보를 표시할 커스텀오버레이 입니다 
+    var dots = {}; // 선이 그려지고 있을때 클릭할 때마다 클릭 지점과 거리를 표시하는 커스텀 오버레이 배열입니다.
+	
+	var linePath1 = [
+		new kakao.maps.LatLng(37.5603311,127.013855),
+		new kakao.maps.LatLng(37.56077970956365, 127.01319695402124),
+		new kakao.maps.LatLng(37.560923847130624, 127.0133916518675),
+		new kakao.maps.LatLng(37.56111847979138, 127.01323775927098),
+		new kakao.maps.LatLng(37.56138150655941, 127.0137991901829),
+		new kakao.maps.LatLng(37.56181400233214, 127.01364986840635),
+		new kakao.maps.LatLng(37.56201226392752, 127.01327866339335),
+		new kakao.maps.LatLng(37.5625600400198, 127.01354134776442),
+		new kakao.maps.LatLng(37.562906055555544, 127.01325165771355)
+	
+	]; 
+ 
+	var polyline = new kakao.maps.Polyline({
+		path: linePath1, // 선을 구성하는 좌표배열 입니다
+		strokeWeight: 5, // 선의 두께 입니다
+		strokeColor: '#4dd599', // 선의 색깔입니다
+		strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+		strokeStyle: 'solid' // 선의 스타일입니다
+	});
+	 
+	polyline.setMap(map);  
+	
+	pos = new kakao.maps.LatLng(<%= @recom_last.latitude %>, <%= @recom_last.longitude %>);
+	var distance = Math.round(polyline.getLength());
+	displayCircleDot(pos, distance);
+	
+	//거리, 시간 계산해주기
+	var distance = polyline.getLength();
+	    function displayCircleDot(position, distance) {
+		var walkkTime = distance / 67 | 0;
+		var walkHour = '', walkMin = '';
+
+		// 계산한 도보 시간이 60분 보다 크면 시간으로 표시합니다
+		if (walkkTime > 60) {
+			walkHour = '<span class="number">' + Math.floor(walkkTime / 60) + '</span>시간 '
+		}
+		walkMin = '<span class="number">' + walkkTime % 60 + '</span>분'
+        if (distance > 0) {
+            // 클릭한 지점까지의 그려진 선의 총 거리를 표시할 커스텀 오버레이를 생성합니다
+            var distanceOverlay = new daum.maps.CustomOverlay(
+                    {
+                        content : '<div class="dotOverlay">거리 <span class="number">'
+                                + distance + '</span>m'+'<br><span class="label">도보</span>' + walkMin+'</div>',
+                        position : position,
+                        yAnchor : 1,
+                        zIndex : 2
+                    });
+ 
+            // 지도에 표시합니다
+            distanceOverlay.setMap(map);
+        }
+    }
+circle2.setMap(map);
+}
+	
+</script>

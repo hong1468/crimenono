@@ -1,0 +1,238 @@
+<style>
+	body{
+		font-family: 'Do Hyeon', sans-serif;
+		padding: 0px;
+	}
+	.body{
+		margin: 0px;
+	}
+	
+	.mysize {
+		margin: 0 auto;
+		width: 300px
+	}
+	
+	.logoimg{
+		margin-left: 50px;
+	}
+
+	.icon-info {
+		color: orange;
+		position: absolute;
+		top: 5px;
+    	left: 5px;
+	}
+	
+	.font-color{
+		color: black;
+	}
+	
+	.main{
+		background-color: #ffe196;
+		font-family: 'Do Hyeon', sans-serif;
+		text-align: center;
+		color: #ffffff;
+		margin: 0px;   
+	}
+	
+	.group1{
+		float: left;
+	}
+	#price{
+		width: 170px;
+		text-align: right;
+	}
+	.validate{
+		width: 100px;
+		text-align: center;
+	}
+	.page-footer{
+		background-color: #feb377;
+	}
+	button{
+		width: 170px;
+		font-size: 20px;
+	}
+	footer{
+		margin: 0px;
+	}
+	.card{
+		color: gray;
+		padding-top: 40px;
+		padding-bottom: 40px;
+		text-align: center;
+	}
+	.date{
+		width: 100px;
+	}
+	.price{
+		width: 200px;
+		margin: 0 auto;
+	}
+	.container{
+		padding: 30px;
+	}
+	h3{
+		color: #5b5656;
+	}
+	
+</style>
+
+
+<div>
+	<img class="logoimg" src="logo.png" alt="logo image" width="350" height="300"/>
+</div>
+
+<%= form_tag({controller: 'home', action:'create'}, method:'post') do %>
+<div class="body">
+	
+
+	
+	<div class="main">
+	<div class="container">
+		<div class="row">
+		<div class="col-sm">
+		<div class="card">
+
+		<div class="months">
+			<!-- 가입기간 db: t.integer로 value='int' -->
+			<h3 class='font-color'>가입기간</h3>
+			<div class="month">
+			  <label>
+				<input name="price1" type="radio" value='6'>
+				<span>6개월</span>
+			  </label>
+			</div>
+			<div class="month">
+			  <label>
+				<input name="price2" type="radio" value='12'>
+				<span>12개월</span>
+			  </label>
+			</div>
+			<div class="month">
+			  <label>
+				<input name="price3" type="radio" value='24'>
+				<span>24개월</span>
+			  </label>
+			</div>
+			<div class="month">
+			  <label>
+				<input name="price4" type="radio" value='36'>
+				<span>36개월</span>
+			  </label>
+			</div>
+		</div><br>
+
+		<div>
+			<h3 class='font-color'>예치금</h3>	
+			<div class="price">
+				<input type="text" name="money" class="validate" placeholder="ex) 7000000">
+			</div>
+		</div><br>
+
+		<div>
+			<h3 class='font-color'>성별</h3>
+			<div class="gender">
+			  <label>
+				<input type="radio" name="sex" value='true'>
+				<span>남성</span>
+			  </label>
+			</div>
+			<div class="gender">
+			  <label>
+				<input type="radio" name="sex" value='false'>
+				<span>여성</span>
+			  </label>
+			</div>
+		</div><br>
+
+		<div class="price">
+			<!-- data jquery or javasc 적용 필요 -->
+			<h3 class='font-color'>생년월일</h3>
+			<input name='birthday' type="text" class="validate" placeholder="문자열이라 자유롭게 입력">
+		</div><br>
+
+		<div>
+			<h3 class='font-color'>가입경로</h3>
+			<div>
+			  <label>
+				<input type="radio" name="contactOptions" value='true'>
+				<span>대면</span>
+			  </label>
+			</div>
+			<div class="gender">
+			  <label>
+				<input type="radio" name="contactOptions" value='false'>
+				<span>비대면</span>
+			  </label>
+			</div>
+		</div><br>
+
+		<div>
+
+			<h3 class='font-color'>은행을 방문할 수 있는 지역</h3>	
+			<p>
+			<div class="mysize">
+				<select name="region" class="required-value form-control" required>
+					<option value="서울">서울</option>
+					<option value="대전">대전</option>
+					<option value="부산">부산</option>
+					<option value="광주">광주</option>
+					<option value="충남">충남</option>
+					<option value="충북">충북</option>
+					<option value="제주">제주</option>
+					<option value="전북">전북</option>
+					<option value="전남">전남</option>
+					<option value="강원">강원</option>
+					<option value="경남">경남</option>
+					<option value="대구">대구</option>
+				</select>
+			</div>	  	 
+		</div>
+
+	</div>
+	</div>
+
+	<div class="col-sm">
+		<div class="card">
+			<img class="new icon-info" src="new.png" alt="new sign" width="10%">
+			<a href="https://www.kebhana.com/index.html"><img class="banklogo" src="hanabank.jpg" alt="bank logo" width="80px"></a>
+
+			<h3>
+				하나 더적금
+			</h3>
+			<p>
+				연 5.01%의 1년제 정액 적립식 적금 상품<br>
+				시작일 20.2.3 | 소진시마감
+			</p>
+
+		</div>
+		<div class="card">
+			<a href="https://www.welcomebank.co.kr/ib20/mnu/IBN000000000#page3"><img class="banklogo" src="welcome_logo.jpg" alt="bank logo" width="150px"></a>
+			<h3>
+				U+웰컴투에이트(8)
+			</h3>
+			<p>
+				누적 연 8%의 금리를 제공하는 통신연계 적금상품<br>
+				시작일 19.9.23 | 소진시마감
+			</p>
+		</div>
+		<div class="card">
+			<a href="https://www.jtchinae-bank.co.kr/deposit/product.do"><img class="banklogo" src="jt_logo.png" alt="bank logo" width="100px"></a>
+			<h3>
+				회전식 정기예금
+			</h3>
+			<p>
+				1년 단위 회전 주기마다 연 0.1포인트 추가금리를 제공하는 정기예금<br>
+				시작일 19.4.17 | 소진시마감
+			</p>
+		</div>
+	</div>
+		</div>
+			<!-- 버튼 클릭시 form post 방식으로 '/final_page' 전달, 미수정 -->
+			<button type="submit" class="btn btn-warning" style="font-size: 20px">결과 확인</button>			<br><br><br>
+	</div>
+</div>
+<% end %>	
+	
+		

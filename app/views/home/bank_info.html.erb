@@ -1,0 +1,134 @@
+<style>
+	.body{
+		font-family: 'Do Hyeon', sans-serif;
+	}
+	
+	.ranking-info {
+    color: black;
+    position: absolute;
+    top: 3px;
+    left: 24px;
+    font-weight: 500;
+	}
+	
+	.bis_font {
+    	font-weight: 700;
+    	font-size: 17px;
+	}
+	
+	.intro{
+		background-color: #2f3d47;
+		padding: 8px;
+		font-family: 'Do Hyeon', sans-serif;
+		text-align: center;
+		color: #ffffff;
+	}	
+	.main{
+		background-color: #ffe196;
+		font-family: 'Do Hyeon', sans-serif;
+		text-align: center;
+		color: #ffffff;
+		margin: 0px;   
+	}
+	.logoimg{
+		margin-left: 50px;
+	}
+	.page-footer{
+		background-color: #feb377;
+	}
+	
+	.anal_image {
+		top: 350px;
+    	left: 230px;
+		width: 300px; 
+		height: 220px; 
+		position: absolute;
+	}
+</style>
+
+
+<div class="intro">
+	<div style='padding-top: 20px;'>
+	<span style='color: #ffe196; font-size: 17px;'>예금야금 TIP</span>
+	</div>
+	<h2>
+		예금야금의 저축은행 분석 결과입니다. 
+	</h2><br>
+</div>
+
+<!-- 오류 원인 1) <img> 태그는 먹히지 않는다. -->
+<!-- 오류 원인 2) 루비 문법을 문자열 안에 쓰려면 "" 큰 따옴표 안에 #{}로 묶어준다. -->
+<%= image_tag "/2_new.png", class: "anal_image" %>
+<div class="card" style="width: 38rem; margin: 2rem auto;">
+	<form class="form-inline">
+  	<div class="form-group col-md-8" style="margin-left: 59px;">
+    	<label for="inputPassword2" class="sr-only"></label>
+    	<input type="text" name="query" class="form-control" id="inputPassword2" placeholder="궁금한 저축은행을 입력해보세요.">
+  	</div>
+  	<button type="submit" class="btn btn-warning mb-2">검색</button>
+	</form>
+</div>	
+
+<% if @queryname.nil? %>
+	<div class="card" style="width: 38rem; margin: 2rem auto;">
+		<%= image_tag "#{@each_bank.rank}.png", class: "card-img-top" %>
+		<div class="card-body">
+			<% if (@each_bank.rank >= 1 and @each_bank.rank <= 17) %>
+			<p class="bis_font">총 79개의 저축은행 중에서 종합순위는 <span style='color: red;'><%= @each_bank.rank %>위</span>이며, <br> 
+			금감원 공시자료 6가지 지표를 근거로 계산한 결과 <span style='color: #0054FF;'>1등급</span>에 속합니다. </p>
+			<% elsif (@each_bank.rank > 17 and @each_bank.rank <= 40) %>
+			<p class="bis_font">총 79개의 저축은행 중에서 종합순위는 <span style='color: red;'><%= @each_bank.rank %>위</span>이며, <br> 
+			금감원 공시자료 6가지 지표를 근거로 계산한 결과 <span style='color: #0054FF;'>2등급</span>에 속합니다. </p>
+			<% elsif (@each_bank.rank > 40 and @each_bank.rank <= 71) %>
+			<p class="bis_font">총 79개의 저축은행 중에서 종합순위는 <span style='color: red;'><%= @each_bank.rank %>위</span>이며, <br> 
+			금감원 공시자료 6가지 지표를 근거로 계산한 결과 <span style='color: #0054FF;'>3등급</span>에 속합니다. </p>
+			<% elsif (@each_bank.rank > 71 and @each_bank.rank <= 79) %>
+			<p class="bis_font">총 79개의 저축은행 중에서 종합순위는 <span style='color: red;'><%= @each_bank.rank %>위</span>이며, <br> 
+			금감원 공시자료 6가지 지표를 근거로 계산한 결과 <span style='color: #0054FF;'>4등급</span>에 속합니다. </p>
+			<% end %>
+		</div>
+	</div>
+<% else %>
+		<div class="card" style="width: 38rem; margin: 2rem auto;">
+		<%= image_tag "#{@only_bank.first.rank}.png", class: "card-img-top" %>
+		<div class="card-body">
+			<% if (@only_bank.first.rank >= 1 and @only_bank.first.rank <= 17) %>
+			<p class="bis_font">총 79개의 저축은행 중에서 종합순위는 <span style='color: red;'><%= @only_bank.first.rank %>위</span>이며, <br> 
+			금감원 공시자료 6가지 지표를 근거로 계산한 결과 <span style='color: #0054FF;'>1등급</span>에 속합니다. </p>
+			<% elsif (@only_bank.first.rank > 17 and @only_bank.first.rank <= 40) %>
+			<p class="bis_font">총 79개의 저축은행 중에서 종합순위는 <span style='color: red;'><%= @only_bank.first.rank %>위</span>이며, <br> 
+			금감원 공시자료 6가지 지표를 근거로 계산한 결과 <span style='color: #0054FF;'>2등급</span>에 속합니다. </p>
+			<% elsif (@only_bank.first.rank > 40 and @only_bank.first.rank <= 71) %>
+			<p class="bis_font">총 79개의 저축은행 중에서 종합순위는 <span style='color: red;'><%= @only_bank.first.rank %>위</span>이며, <br> 
+			금감원 공시자료 6가지 지표를 근거로 계산한 결과 <span style='color: #0054FF;'>3등급</span>에 속합니다. </p>
+			<% elsif (@only_bank.first.rank > 71 and @only_bank.first.rank <= 79) %>
+			<p class="bis_font">총 79개의 저축은행 중에서 종합순위는 <span style='color: red;'><%= @only_bank.first.rank %>위</span>이며, <br> 
+			금감원 공시자료 6가지 지표를 근거로 계산한 결과 <span style='color: #0054FF;'>4등급</span>에 속합니다. </p>
+			<% end %>
+		</div>
+	</div>
+<% end %>
+
+<% if @queryname.nil? %>
+	<div class="container">
+		<div class="row">
+			<% @bank_order.each do |x| %>
+			<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12">
+				<%= image_tag "#{x.rank}.png", class: "card-img-top" %>	
+				<p class="ranking-info"><%= x.rank %>위</p>
+			</div>
+			<% end %>
+		</div>
+	</div>	
+<% else %>
+	<div class="container">
+		<div class="row">
+			<% @bank_order.each do |x| %>
+			<div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12">
+				<%= image_tag "#{x.rank}.png", class: "card-img-top" %>	
+				<p class="ranking-info"><%= x.rank %>위</p>
+			</div>
+			<% end %>
+		</div>
+	</div>
+<% end %>

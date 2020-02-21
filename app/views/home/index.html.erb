@@ -1,0 +1,68 @@
+<style>
+	body{
+		font-family: 'Do Hyeon', sans-serif;
+	}
+	.logoimg{
+		margin-left: 50px;
+	}
+	.intro{
+		background-color: #2f3d47;
+		padding: 8px;
+		font-family: 'Do Hyeon', sans-serif;
+		text-align: center;
+		color: #ffffff;
+	}
+	button{
+		text-decoration: none;
+		width: 200px;
+		height: 70px;
+	}
+	
+	.page-footer{
+		background-color: #feb377;
+	}
+	
+	#describimg{
+		width: 40%;
+		margin: 0px 60px;
+	}
+	.explain{
+		background-color: #ffe196;
+		text-align: center;
+	}
+	button{
+		text-decoration: none;
+	}
+	.linkto{
+		display: inline-block;
+	}
+</style>
+
+
+<div>
+	<img class="logoimg" src="logo.png" alt="logo image" width="350" height="300"/>	
+</div>
+
+<div class="intro">
+	<br><h2>
+		야금예금은 79개의 저축은행, 212개의 예금상품을 <br>소비자 개인 맞춤형으로 추천해주는 서비스입니다
+	</h2><br>
+</div>
+<div class="explain">
+	<br><br><br><br><br>
+	<div class="linkto">
+		<img id="describimg" src="portfolio.png" alt="portfolio image">
+		<h3>
+			나에게 꼭 맞는 예금은?
+		</h3>
+		<button type="button" class="btn btn-warning btn-lg"><%= link_to '추천 받으러 가기', "/best_credit" %></button>
+	</div>
+	<div class="linkto">
+		<img id="describimg" src="bank1.png" alt="bank image">
+		<h3>
+			저축은행별 순위, 안정성 등급은?
+		</h3>
+		<button type="button" class="btn btn-warning btn-lg"><%= link_to '정보 보러가기', "/bank_info/1?query=SBI저축은행" %></button>
+	</div>
+	<br><br><br><br><br><br><br><br>
+</div>
